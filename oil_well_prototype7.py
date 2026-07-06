@@ -2,22 +2,21 @@ import streamlit as st
 import pandas as pd
 import folium
 from streamlit_folium import st_folium
-
+import sqlite3
 # فرضاً أن هذه هي البيانات القادمة من قاعدة البيانات SQLite الخاصة بك
 # تأكد من مطابقة أسماء الأعمدة مع كودك الحالي
 @st.cache_data
 def load_well_data():
-    # بيانات افتراضية تمثل آبار في حقول ليبية (مثل حقل السرير ومسلة)
-    data = {
-        'Well_Name': ['Well-SR-1', 'Well-MS-3', 'Well-SR-12', 'Well-MS-7'],
-        'Field': ['Sarir', 'Messlah', 'Sarir', 'Messlah'],
-        'Latitude': [27.6500, 28.1000, 27.6800, 28.1200],
-        'Longitude': [22.5000, 22.3000, 22.5500, 22.3400],
-        'Pressure_PSI': [3200, 1500, 2800, 4100],
-        'Temperature_C': [85, 60, 72, 110],
-        'Risk_Level': ['Safe', 'Safe', 'Safe', 'Critical'] # يتم حسابها بناءً على المعادلات أو الـ AI
-    }
-    return pd.DataFrame(data)
+    # الاتصال بقاعدة بيانات الآبار
+    conn = sqlite3.connect("oil_wells.db")
+    
+    # جلب كافة البيانات الـ 16 من جدول الآبار
+    query = "SELECT * FROM wells"
+    df = pd.read_sql_query(query, conn)
+    
+    conn.close()
+    return df
+    
 
 df_wells = load_well_data()
 
