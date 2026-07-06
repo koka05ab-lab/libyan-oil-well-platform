@@ -105,4 +105,4 @@ st.markdown("""
     <div><span style="color: green; font-size: 20px;">●</span> آبار مستقرة (Safe)</div>
     <div><span style="color: red; font-size: 20px;">●</span> آبار حرجة / خطر (Critical)</div>
 </div>
-""", unsafe_index=True)
+""", unsafe_allow_hmtl=True)
