@@ -1,3 +1,10 @@
+import os
+# أمر لإجبار السيرفر على تثبيت مكتبة الخرائط تلقائياً
+os.system("pip install streamlit-folium folium")
+
+import streamlit as st
+import pandas as pd
+# باقي الكود...
 import streamlit as st
 import pandas as pd
 import folium
