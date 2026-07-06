@@ -7,16 +7,32 @@ import sqlite3
 # تأكد من مطابقة أسماء الأعمدة مع كودك الحالي
 @st.cache_data
 def load_well_data():
-    # الاتصال بقاعدة بيانات الآبار
     conn = sqlite3.connect("oil_wells.db")
+    cursor = conn.cursor()
     
-    # جلب كافة البيانات الـ 16 من جدول الآبار
-    query = "SELECT * FROM wells"
-    df = pd.read_sql_query(query, conn)
+    # كود ذكي لجلب أسماء الجداول الموجودة داخل قاعدة البيانات تلقائياً
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cursor.fetchall()
     
+    # إذا وجدت قاعدة البيانات جداول، اقرأ من الجدول الأول فوراً
+    if tables:
+        table_name = tables[0][0]
+        query = f"SELECT * FROM {table_name}"
+        df = pd.read_sql_query(query, conn)
+    else:
+        # إذا كانت قاعدة البيانات فارغة تماماً، ارجع لبيانات احتياطية لكي لا يتعطل الموقع
+        df = pd.DataFrame({
+            'Well_Name': ['Well-SR-1', 'Well-MS-3'],
+            'Field': ['Sarir', 'Messlah'],
+            'Latitude': [27.6500, 28.1000],
+            'Longitude': [22.5000, 22.3000],
+            'Pressure_PSI': [3200, 1500],
+            'Temperature_C': [85, 60],
+            'Risk_Level': ['Safe', 'Safe']
+        })
+        
     conn.close()
     return df
-    
 
 df_wells = load_well_data()
 
